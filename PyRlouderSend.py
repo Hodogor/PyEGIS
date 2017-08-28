@@ -1,8 +1,30 @@
+# -*- coding: utf-8 -*-
+# ~ Скрипт для проверки паспортных данных в направлениях 
+# ~ на рег. регистр. 
+# ~ Удаление повторных направлений
+# ~ Author:      NikolayDp10
+# ~ DateCreate:  2017-08-28
+
+
+ # Создаем подключение к БД
 import pyodbc
 cnxn = pyodbc.connect('DRIVER={SQL Server};SERVER=10.14.198.200;DATABASE=AKUZDB;UID=sa;PWD=Q!w2E#r4')
-    # Create a cursor from the connection
-cursor = cnxn.cursor()
-ex = """
+
+
+ # Получаем данные о новых направлениях и сохр. в переменную rows
+ cursor = cnxn.cursor()
+cursor.execute("""
+        SELECT [PatientBenefitsDirectionID]
+            ,[Patient]
+            ,[SNILS]
+            ,[DocType]
+            ,[DocSeries]
+            ,[DocNumber] FROM  [AKUZDB].[dbo].[T_PATIENT_BENEFITS_DIRECTION] WHERE [Loaded]=0
+          """)
+rows = cursor.fetchall()
+
+"""cursor = cnxn.cursor()
+ex = 
 /****** Проверка на наличие документов ******/
 
 --объявляем переменные
@@ -85,6 +107,6 @@ END
 --закрываем курсор
 CLOSE my_cur
 DEALLOCATE my_cur
-    """
+    
    
-cursor.execute(ex)
+cursor.execute(ex)"""
