@@ -36,13 +36,9 @@ for row in rows:
     cnxn.commit()
     #Объявляем переменные
     DocSeries, DocNumber, SNILS, DocType = patientDoc  
-    # Обновляем СНИЛС
-    if SNILS != row[2]:
+    # Обновляем СНИЛС и документы
+    if SNILS != row[2] or DocSeries != row[4] or DocNumber != row[5]:
         cursor = cnxn.cursor()
-        cursor.execute("UPDATE [T_PATIENT_BENEFITS_DIRECTION] SET [SNILS] = ? WHERE [PatientBenefitsDirectionID] = ?;", SNILS , row[0])
+        cursor.execute("UPDATE [T_PATIENT_BENEFITS_DIRECTION] SET [DocNumber] = ?,[DocSeries] = ?,[DocType] =?,[SNILS] = ? WHERE [PatientBenefitsDirectionID] = ?;",DocNumber,DocSeries ,DocType ,SNILS , row[0])
         cnxn.commit()
         print("Обновляю данные:"+SNILS + '=' +row[2])
-        
-    # Обновляем свидетельство
-    if DocSeries != row[4] or DocNumber != row[5]:
-        print("Обновляю данные:"+DocSeries + '=' +row[4]+' '+row[5])
