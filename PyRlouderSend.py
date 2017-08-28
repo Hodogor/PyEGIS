@@ -42,3 +42,22 @@ for row in rows:
         cursor.execute("UPDATE [T_PATIENT_BENEFITS_DIRECTION] SET [DocNumber] = ?,[DocSeries] = ?,[DocType] =?,[SNILS] = ? WHERE [PatientBenefitsDirectionID] = ?;",DocNumber,DocSeries ,DocType ,SNILS , row[0])
         cnxn.commit()
         print("Обновляю данные:"+SNILS + '=' +row[2])
+        
+    #удаляем направления если есть дубль
+    cursor = cnxn.cursor()
+    sql = "SELECT Count([T_PATIENT_BENEFITS_DIRECTION].[Patient]) FROM  [AKUZDB].[dbo].[T_PATIENT_BENEFITS_DIRECTION] WHERE [Loaded]=0 AND [Patient]='"+PatientID +"'"
+    cursor.execute(sql)
+    double = cursor.fetchone()
+    double = int(double[0])
+    if double != 1:
+        #удаляем льготу
+        cursor = cnxn.cursor()
+        cursor.execute("Delete From [T_PATIENT_BENEFITS_DIRECTION_DATA] where T_PATIENT_BENEFITS_DIRECTION_DATA.PatientBenefitsDirection = ?;", row[0])
+        cnxn.commit()
+        print('Дубликат')
+        #удаляем направление
+        cursor = cnxn.cursor()
+        cursor.execute("Delete From [T_PATIENT_BENEFITS_DIRECTION] where T_PATIENT_BENEFITS_DIRECTION.PatientBenefitsDirectionID = ?;", row[0])
+        cnxn.commit()
+        
+    
