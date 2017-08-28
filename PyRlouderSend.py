@@ -12,7 +12,7 @@ cnxn = pyodbc.connect('DRIVER={SQL Server};SERVER=10.14.198.200;DATABASE=AKUZDB;
 
 
  # Получаем данные о новых направлениях и сохр. в переменную rows
- cursor = cnxn.cursor()
+cursor = cnxn.cursor()
 cursor.execute("""
         SELECT [PatientBenefitsDirectionID]
             ,[Patient]
@@ -23,6 +23,19 @@ cursor.execute("""
           """)
 rows = cursor.fetchall()
 
+# Обрабатываем каждое направление
+for row in rows:
+    # Получаем идентификатор пациента
+    PatientID = row[1]
+    # Узнаем паспортные данные пациента из профиля
+    cnxn = pyodbc.connect('DRIVER={SQL Server};SERVER=10.14.198.200;DATABASE=AKUZDB;UID=sa;PWD=Q!w2E#r4')
+    cursor = cnxn.cursor()
+    sql = "	SELECT [DocSeries],[DocNumber], [SNILS], [DocType] FROM [AKUZDB].[dbo].[T_PATIENT] WHERE [PatientID]='"+PatientID +"'"
+    cursor.execute(sql)
+    patientDoc = cursor.fetchone()
+    #Объявляем переменные
+    DocSeries, DocNumber, SNILS, DocType = patientDoc  
+    print(SNILS + '=' +row[2])
 """cursor = cnxn.cursor()
 ex = 
 /****** Проверка на наличие документов ******/
