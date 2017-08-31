@@ -73,5 +73,17 @@ for row in rows:
         cursor.execute("Delete From [T_PATIENT_BENEFITS_DIRECTION] where T_PATIENT_BENEFITS_DIRECTION.PatientBenefitsDirectionID = ?;", row[0])
         cnxn.commit()
         continue
+    #удаляем направление если у пациента нет документов
+    if DocNumber == None or DocSeries == None:
+        print('No Document')
+        #удаляем льготу
+        cursor = cnxn.cursor()
+        cursor.execute("Delete From [T_PATIENT_BENEFITS_DIRECTION_DATA] where T_PATIENT_BENEFITS_DIRECTION_DATA.PatientBenefitsDirection = ?;", row[0])
+        cnxn.commit()
+        #удаляем направление
+        cursor = cnxn.cursor()
+        cursor.execute("Delete From [T_PATIENT_BENEFITS_DIRECTION] where T_PATIENT_BENEFITS_DIRECTION.PatientBenefitsDirectionID = ?;", row[0])
+        cnxn.commit()
+        continue
         
     
